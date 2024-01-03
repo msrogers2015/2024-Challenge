@@ -1,4 +1,5 @@
 from random import shuffle, randint
+from time import sleep
 
 class Deck:
     def __init__(self) -> None:
@@ -44,6 +45,7 @@ class Player:
         # Create a list to hold current cards in hand.
         self.hand = []
         self.hand2 = []
+        self.split_flag = False
 
     def get_value(self, hand) -> int:
         '''Add value of cards in players hand'''
@@ -69,17 +71,66 @@ class Player:
                     hand_value -= 10
         return hand_value
 
-    def add_card(self):
+    def add_card(self, card) -> None:
         '''Add card to hand'''
-        pass
+        if self.split_flag is False:
+            self.hand.append(card)
 
     def split_hand(self):
         '''Split hand into two hands.'''
         pass
 
+    def print_hand(self) -> None:
+        pass
+
+class Dealer:
+    def __init__(self) -> None:
+        '''Create the dealer to play against.'''
+        # Create list to hold current cards in hand
+        self.hand = []
+
+    def set_hand(self) -> None:
+        pass
+
+    def print_hand(self) -> None:
+        pass
+
+class Game:
+    def __init__(self) -> None:
+        '''Initialize the game.'''
+        # Create the player
+        self.player = Player()
+        # Create the dealer
+        self.dealer = Dealer()
+        # Create a bet counter.
+        self.bet = 0
+
+    def start_game(self) -> None:
+        '''Ask player to place a bet.'''
+        # Set bet flag to None object
+        bet = None
+        # Loop as long as the player has not input valid data
+        while bet is None:
+            try:
+                # Ask player for a bet as a whole number
+                bet = int(
+                    input(f'Place your bet (max bet {self.player.bank}): ')
+                )
+            # If user does not enter a valid value, alert player of error and
+            # try again.
+            except ValueError:
+                print('Please enter a whole number.')
+                # Give user time to read message.
+                sleep(3)
+        # Set game bet to twice the player bet and remove player bet from their
+        # bank.
+        self.bet = bet * 2
+        self.player.bank -= bet
+
 if __name__ == '__main__':
-    # Test code via running it from the main file. Actual game loop
-    # will be placed in a Gameplay class.
-    player = Player()
-    player.hand = ['A-D', '4-H', '3-H', 'A-S']
-    player.get_value()
+    '''If the file is ran, start gameplay'''
+    # Create an instance of the game class.
+    game = Game()
+    game.start_game()
+    print(game.player.bank)
+    print(game.bet)
