@@ -112,25 +112,40 @@ class Game:
         # Loop as long as the player has not input valid data
         while bet is None:
             try:
-                # Ask player for a bet as a whole number
-                bet = int(
-                    input(f'Place your bet (max bet {self.player.bank}): ')
-                )
+                if self.player.bank > 0:
+                    # Ask player for a bet as a whole number or quit the game
+                    bet = (
+                        input(f'Place your bet (max bet {self.player.bank}) '\
+                              'or type "q" to quit: ')
+                    )
+                    # If player input is "q", exit the game
+                    if bet.lower() == "q":
+                        break
+                    # If player input is numeric, place bet
+                    if bet.isdigit():
+                        # Set game bet to twice the player bet and remove
+                        # player bet from their bank.
+                        self.bet = int(bet) * 2
+                        self.player.bank -= int(bet)
+                    # Raise value error is player input isn't q to quit or a 
+                    # whole number
+                    else:
+                        bet = None
+                        raise ValueError
+                else:
+                    print('Your bank is empty, game over. :(')
+                    break
             # If user does not enter a valid value, alert player of error and
             # try again.
             except ValueError:
-                print('Please enter a whole number.')
+                print('Please enter a whole number or "q" to quit the game.')
                 # Give user time to read message.
-                sleep(3)
-        # Set game bet to twice the player bet and remove player bet from their
-        # bank.
-        self.bet = bet * 2
-        self.player.bank -= bet
+                sleep(1)
+                print('\n'*2)
 
 if __name__ == '__main__':
     '''If the file is ran, start gameplay'''
     # Create an instance of the game class.
     game = Game()
     game.start_game()
-    print(game.player.bank)
-    print(game.bet)
+
